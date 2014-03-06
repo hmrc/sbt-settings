@@ -18,24 +18,26 @@ import Keys._
 
 object PluginBuild extends Build {
 
+  import net.virtualvoid.sbt.graph.Plugin.graphSettings
+
   val pluginName = "sbt-utils"
   val pluginVerson = "1.0.0-SNAPSHOT"
 
   lazy val root = Project(pluginName, base = file("."), settings = Project.defaultSettings ++ Seq(
 
-    version := pluginVerson,
-    sbtPlugin := true,
-    organization := "uk.gov.hmrc",
-    name := pluginName,
-    scalaVersion := "2.10.3",
+      version := pluginVerson,
+      sbtPlugin := true,
+      organization := "uk.gov.hmrc",
+      name := pluginName,
+      scalaVersion := "2.10.3",
 
-    addSbtPlugin("uk.gov.hmrc" % "sbt-git-stamp" % "2.0.0"),
-    addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.3.0"),
-    addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.7.4"),
-    publishArtifact := true,
-    publishArtifact in Test := false
+      addSbtPlugin("uk.gov.hmrc" % "sbt-git-stamp" % "2.0.0"),
+      addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.3.0"),
+      addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.7.4"),
+      publishArtifact := true,
+      publishArtifact in Test := false
+    ) ++ graphSettings ++ SonatypeBuild() 
   )
-  ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
 
 }
 
