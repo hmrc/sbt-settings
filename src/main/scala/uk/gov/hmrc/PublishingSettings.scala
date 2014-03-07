@@ -40,3 +40,5 @@ trait PublishingSettings {
     publishArtifact in Test := true
   )
 }
+
+object PublishingSettings extends PublishingSettings

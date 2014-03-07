@@ -15,7 +15,7 @@
  */
 package uk.gov.hmrc
 
-//Credit go to the Reactivemongo gents for this utility
+//Credit goes to the Reactivemongo gents for this utility
 object ShellPrompt {
 
   import _root_.sbt._
