@@ -1,5 +1,0 @@
-#!/bin/bash
-echo "Seting up dev environment for sbt-microservice-plugin"
-pwd
-./sbt "gen-idea sbt-classifiers"
-echo "reminder, you'll want to use start-mongo from the hmrc scripts as well"
