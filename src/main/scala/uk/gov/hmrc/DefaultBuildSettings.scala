@@ -55,7 +55,7 @@ object DefaultBuildSettings {
 
   def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
     val testResultDir = "target/" + directory
-    testOptions in conf += Tests.Argument("-u", testResultDir, "-h", testResultDir + "/html-report")
+    testOptions in conf += Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
   }
 }
 
