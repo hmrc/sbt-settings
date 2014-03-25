@@ -21,7 +21,7 @@ object PluginBuild extends Build {
   import net.virtualvoid.sbt.graph.Plugin.graphSettings
 
   val pluginName = "sbt-utils"
-  val pluginVersion = "1.0.2"
+  val pluginVersion = "1.0.3-SNAPSHOT"
 
   lazy val root = Project(pluginName, base = file("."), settings = Project.defaultSettings ++ Seq(
 
