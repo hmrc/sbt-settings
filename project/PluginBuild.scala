@@ -29,7 +29,7 @@ object PluginBuild extends Build {
       sbtPlugin := true,
       organization := "uk.gov.hmrc",
       name := pluginName,
-      scalaVersion := "2.10.3",
+      scalaVersion := "2.10.4",
 
       addSbtPlugin("uk.gov.hmrc" % "sbt-git-stamp" % "2.0.0"),
       addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.3.0"),

@@ -20,21 +20,23 @@ import sbt.Keys._
 import sbt.Configuration
 
 object DefaultBuildSettings {
-  
+
   import uk.gov.hmrc.GitStampPlugin._
   import net.virtualvoid.sbt.graph.Plugin.graphSettings
-  
+
   def apply(appName: String,
-                     appVersion: String,
-                     organizationPackage : String = "uk.gov.hmrc",
-                     targetJvm : String = "jvm-1.7")
-                    (builtShellPrompt : (State) => String = ShellPrompt.buildShellPrompt(appVersion)) = {
-    Defaults.defaultSettings ++
+            appVersion: String,
+            organizationPackage: String = "uk.gov.hmrc",
+            targetJvm: String = "jvm-1.8",
+            scalaversion: String = "2.10.4",
+            addScalaTestReports: Boolean = true)
+           (builtShellPrompt: (State) => String = ShellPrompt.buildShellPrompt(appVersion)) = {
+    val settings = Defaults.defaultSettings ++
       Seq(
         organization := organizationPackage,
         name := appName,
         version := appVersion,
-        scalaVersion := "2.10.3",
+        scalaVersion := scalaversion,
         scalacOptions ++= Seq(
           "-unchecked",
           "-deprecation",
@@ -48,9 +50,10 @@ object DefaultBuildSettings {
         initialCommands in console := "import " + organizationPackage + "._",
         shellPrompt := builtShellPrompt,
         parallelExecution in Test := false,
-        addTestReportOption(Test),
         fork in Test := false
-        ) ++ gitStampSettings ++ graphSettings
+      ) ++ gitStampSettings ++ graphSettings
+
+    if (addScalaTestReports) settings ++ addTestReportOption(Test) else settings
   }
 
   def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
