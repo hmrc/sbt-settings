@@ -31,7 +31,7 @@ object PluginBuild extends Build {
       name := pluginName,
       scalaVersion := "2.10.4",
 
-      addSbtPlugin("uk.gov.hmrc" % "sbt-git-stamp" % "2.0.0"),
+      addSbtPlugin("uk.gov.hmrc" % "sbt-git-stamp" % "4.0.0"),
       addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.3.0"),
       addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.7.4"),
       publishArtifact := true,
