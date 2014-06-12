@@ -30,9 +30,12 @@ object PluginBuild extends Build {
       organization := "uk.gov.hmrc",
       name := pluginName,
       scalaVersion := "2.10.4",
-
-      addSbtPlugin("uk.gov.hmrc" % "sbt-git-stamp" % "4.0.0"),
-      addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.3.0"),
+      resolvers ++= Seq(
+        Opts.resolver.sonatypeReleases,
+        Opts.resolver.sonatypeSnapshots
+      ),
+      addSbtPlugin("uk.gov.hmrc" % "sbt-git-stamp" % "4.1.0"),
+      addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.3.2"),
       addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.7.4"),
       publishArtifact := true,
       publishArtifact in Test := false
