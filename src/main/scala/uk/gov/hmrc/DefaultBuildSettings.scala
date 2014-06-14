@@ -50,7 +50,8 @@ object DefaultBuildSettings {
         initialCommands in console := "import " + organizationPackage + "._",
         shellPrompt := builtShellPrompt,
         parallelExecution in Test := false,
-        fork in Test := false
+        fork in Test := false,
+        isSnapshot := appVersion.contains("SNAPSHOT")
       ) ++ gitStampSettings ++ graphSettings
 
     if (addScalaTestReports) settings ++ addTestReportOption(Test) else settings
