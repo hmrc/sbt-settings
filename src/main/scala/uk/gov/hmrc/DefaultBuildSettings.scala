@@ -22,7 +22,6 @@ import sbt.Configuration
 object DefaultBuildSettings {
 
   import uk.gov.hmrc.GitStampPlugin._
-  import net.virtualvoid.sbt.graph.Plugin.graphSettings
 
   def apply(appName: String,
             appVersion: String,
@@ -52,7 +51,7 @@ object DefaultBuildSettings {
         parallelExecution in Test := false,
         fork in Test := false,
         isSnapshot := appVersion.contains("SNAPSHOT")
-      ) ++ gitStampSettings ++ graphSettings
+      ) ++ gitStampSettings
 
     if (addScalaTestReports) settings ++ addTestReportOption(Test) else settings
   }
