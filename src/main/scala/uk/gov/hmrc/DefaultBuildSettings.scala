@@ -28,7 +28,7 @@ object DefaultBuildSettings {
             appVersion: String,
             organizationPackage: String = "uk.gov.hmrc",
             targetJvm: String = "jvm-1.8",
-            scalaversion: String = "2.10.4",
+            scalaversion: String = "2.11.1",
             addScalaTestReports: Boolean = true)
            (builtShellPrompt: (State) => String = ShellPrompt.buildShellPrompt(appVersion)) = {
     val settings = Defaults.defaultSettings ++
