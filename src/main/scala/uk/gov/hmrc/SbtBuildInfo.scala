@@ -15,16 +15,15 @@
  */
 package uk.gov.hmrc
 
+import sbt.Keys._
 import sbt._
-import Keys._
-import scala._
 
 object SbtBuildInfo {
 
   import sbtbuildinfo.Plugin._
   import uk.gov.hmrc.GitStampPlugin.repoInfo
 
-  def apply(packageInfo: String) = buildInfoSettings ++
+  def apply() = buildInfoSettings ++
     Seq(
       buildInfo <<= (sourceManaged in Compile,
         buildInfoObject, buildInfoPackage, buildInfoKeys, thisProjectRef, state, streams) map {
@@ -32,7 +31,7 @@ object SbtBuildInfo {
           Seq(BuildInfo(dir / "sbt-buildinfo", obj, pkg, keys, ref, state, taskStreams.cacheDirectory))
       },
       sourceGenerators in Compile <+= buildInfo,
-      buildInfoPackage := packageInfo,
+      buildInfoPackage := organization.value,
       buildInfoKeys := Seq[BuildInfoKey](
         name,
         version,

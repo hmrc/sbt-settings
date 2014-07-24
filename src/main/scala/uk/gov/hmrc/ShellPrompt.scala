@@ -19,6 +19,7 @@ package uk.gov.hmrc
 object ShellPrompt {
 
   import _root_.sbt._
+  import sbt.Keys._
 
   object devnull extends ProcessLogger {
     def info(s: => String) {}
@@ -33,13 +34,15 @@ object ShellPrompt {
       getOrElse "-" stripPrefix "## "
     )
 
-  def buildShellPrompt(buildVersion : String) = {
+  private def buildShellPrompt = {
     (state: State) => {
       val currProject = Project.extract(state).currentProject.id
       "%s:%s:%s> ".format(
-        currProject, currBranch, buildVersion
+        currProject, currBranch, version
       )
     }
   }
+
+  def apply() = buildShellPrompt
 }
 

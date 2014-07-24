@@ -16,6 +16,7 @@
 package uk.gov.hmrc
 
 import _root_.sbt._
+import sbt.KeyRanks._
 import sbt.Keys._
 import sbt.Configuration
 
@@ -23,34 +24,30 @@ object DefaultBuildSettings {
 
   import uk.gov.hmrc.GitStampPlugin._
 
-  def apply(appName: String,
-            appVersion: String,
-            organizationPackage: String = "uk.gov.hmrc",
-            targetJvm: String = "jvm-1.8",
-            scalaversion: String = "2.11.1",
-            addScalaTestReports: Boolean = true)
-           (builtShellPrompt: (State) => String = ShellPrompt.buildShellPrompt(appVersion)) = {
-    val settings = Defaults.defaultSettings ++
+  lazy val targetJvm = settingKey[String]("The version of the JVM the build targets")
+
+  def apply(addScalaTestReports: Boolean = true) : Seq[Setting[_]] = {
+    val settings =
+      targetJvm := "jvm-1.8"
+      organization := "uk.gov.hmrc"
+
       Seq(
-        organization := organizationPackage,
-        name := appName,
-        version := appVersion,
-        scalaVersion := scalaversion,
+        scalaVersion := "2.11.1",
         scalacOptions ++= Seq(
           "-unchecked",
           "-deprecation",
           "-Xlint",
           "-language:_",
-          "-target:" + targetJvm,
+          "-target:" + targetJvm.value,
           "-Xmax-classfile-name", "100",
           "-encoding", "UTF-8"
         ),
         retrieveManaged := true,
-        initialCommands in console := "import " + organizationPackage + "._",
-        shellPrompt := builtShellPrompt,
+        initialCommands in console := "import " + organization + "._",
+        shellPrompt := ShellPrompt(),
         parallelExecution in Test := false,
         fork in Test := false,
-        isSnapshot := appVersion.contains("SNAPSHOT")
+        isSnapshot := version.value.contains("SNAPSHOT")
       ) ++ gitStampSettings
 
     if (addScalaTestReports) settings ++ addTestReportOption(Test) else settings
