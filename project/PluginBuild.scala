@@ -19,14 +19,12 @@ import Keys._
 object PluginBuild extends Build {
 
   val pluginName = "sbt-utils"
-  val pluginVersion = "2.0.0-SNAPSHOT"
+  val pluginVersion = "2.0.0"
 
-  lazy val root = Project(pluginName, base = file("."), settings = Project.defaultSettings ++ Seq(
-
+  lazy val sbtUtils = Project(pluginName, file("."), settings = Defaults.coreDefaultSettings ++ Seq(
       version := pluginVersion,
       sbtPlugin := true,
       organization := "uk.gov.hmrc",
-      name := pluginName,
       scalaVersion := "2.10.4",
       resolvers ++= Seq(
         Opts.resolver.sonatypeReleases,
@@ -38,7 +36,6 @@ object PluginBuild extends Build {
       publishArtifact in Test := false
     ) ++ SonatypeBuild()
   )
-
 }
 
 
