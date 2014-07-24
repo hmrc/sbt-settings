@@ -26,30 +26,33 @@ object DefaultBuildSettings {
 
   lazy val targetJvm = settingKey[String]("The version of the JVM the build targets")
 
-  def apply(addScalaTestReports: Boolean = true) : Seq[Setting[_]] = {
-    val settings =
-      targetJvm := "jvm-1.8"
+  lazy val scalaSettings : Seq[Setting[_]] = {
+    targetJvm := "jvm-1.8"
 
-      Seq(
-        organization := "uk.gov.hmrc",
-        scalaVersion := "2.11.1",
-        scalacOptions ++= Seq(
-          "-unchecked",
-          "-deprecation",
-          "-Xlint",
-          "-language:_",
-          "-target:" + targetJvm.value,
-          "-Xmax-classfile-name", "100",
-          "-encoding", "UTF-8"
-        ),
-        retrieveManaged := true,
-        initialCommands in console := "import " + organization + "._",
-        parallelExecution in Test := false,
-        fork in Test := false,
-        isSnapshot := version.value.contains("SNAPSHOT")
-      ) ++ gitStampSettings
+    Seq(
+      scalaVersion := "2.11.1",
+      scalacOptions ++= Seq(
+        "-unchecked",
+        "-deprecation",
+        "-Xlint",
+        "-language:_",
+        "-target:" + targetJvm.value,
+        "-Xmax-classfile-name", "100",
+        "-encoding", "UTF-8"
+      )
+    )
+  }
 
-    if (addScalaTestReports) settings ++ addTestReportOption(Test) else settings
+  def defaultSettings(addScalaTestReports: Boolean = true) : Seq[Setting[_]] = {
+    val ds = Seq(
+      organization := "uk.gov.hmrc",
+      initialCommands in console := "import " + organization + "._",
+      parallelExecution in Test := false,
+      fork in Test := false,
+      isSnapshot := version.value.contains("SNAPSHOT")
+    ) ++ gitStampSettings
+
+    if (addScalaTestReports) ds ++ addTestReportOption(Test) else settings
   }
 
   def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
