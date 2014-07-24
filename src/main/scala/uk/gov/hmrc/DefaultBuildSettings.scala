@@ -29,9 +29,9 @@ object DefaultBuildSettings {
   def apply(addScalaTestReports: Boolean = true) : Seq[Setting[_]] = {
     val settings =
       targetJvm := "jvm-1.8"
-      organization := "uk.gov.hmrc"
 
       Seq(
+        organization := "uk.gov.hmrc",
         scalaVersion := "2.11.1",
         scalacOptions ++= Seq(
           "-unchecked",
@@ -44,7 +44,6 @@ object DefaultBuildSettings {
         ),
         retrieveManaged := true,
         initialCommands in console := "import " + organization + "._",
-        shellPrompt := ShellPrompt(),
         parallelExecution in Test := false,
         fork in Test := false,
         isSnapshot := version.value.contains("SNAPSHOT")
