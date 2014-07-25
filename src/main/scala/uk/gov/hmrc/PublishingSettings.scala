@@ -15,24 +15,20 @@
  */
 package uk.gov.hmrc
 
-trait PublishingSettings {
+object PublishingSettings {
   import _root_.sbt._
   import Keys._
-  import scala.Some
 
-  val sbtCredentials = Credentials(Path.userHome / ".sbt" / ".credentials")
+  val SbtCredentials = Credentials(Path.userHome / ".sbt" / ".credentials")
 
-  def publishToSettings(snapshots : MavenRepository, releases : MavenRepository) = publishTo <<= version {
+  def publishToSettings(snapshots : Resolver, releases : Resolver) : Seq[Setting[_]] = Seq(
+    publishTo <<= version {
     (v: String) =>
       if (v.trim.endsWith("SNAPSHOT"))
         Some(snapshots)
       else
         Some(releases)
-  }
-
-  def publishLocation(publishTo : Setting[Option[Resolver]], c : Credentials = sbtCredentials) = Seq(
-    credentials += c,
-    publishTo
+    }
   )
 
   val publishAllArtefacts = Seq(
@@ -40,5 +36,3 @@ trait PublishingSettings {
     publishArtifact in Test := true
   )
 }
-
-object PublishingSettings extends PublishingSettings

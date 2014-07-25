@@ -19,7 +19,7 @@ import Keys._
 object PluginBuild extends Build {
 
   val pluginName = "sbt-utils"
-  val pluginVersion = "2.0.1-SNAPSHOT"
+  val pluginVersion = "2.0.1"
 
   lazy val sbtUtils = Project(pluginName, file("."), settings = Defaults.coreDefaultSettings ++ Seq(
       version := pluginVersion,
