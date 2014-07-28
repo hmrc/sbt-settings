@@ -16,7 +16,6 @@
 package uk.gov.hmrc
 
 import _root_.sbt._
-import sbt.KeyRanks._
 import sbt.Keys._
 import sbt.Configuration
 
@@ -30,7 +29,7 @@ object DefaultBuildSettings {
     targetJvm := "jvm-1.8"
 
     Seq(
-      scalaVersion := "2.11.1",
+      scalaVersion := "2.11.2",
       scalacOptions ++= Seq(
         "-unchecked",
         "-deprecation",
@@ -52,7 +51,7 @@ object DefaultBuildSettings {
       isSnapshot := version.value.contains("SNAPSHOT")
     ) ++ gitStampSettings
 
-    if (addScalaTestReports) ds ++ addTestReportOption(Test) else settings
+    if (addScalaTestReports) ds ++ addTestReportOption(Test) else ds
   }
 
   def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
