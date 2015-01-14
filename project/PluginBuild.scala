@@ -19,9 +19,9 @@ import Keys._
 object PluginBuild extends Build {
 
   val pluginName = "sbt-utils"
-  val pluginVersion = "2.0.2"
+  val pluginVersion = "2.1.0-SNAPSHOT"
 
-  lazy val sbtUtils = Project(pluginName, file("."), settings = Defaults.coreDefaultSettings ++ Seq(
+  lazy val sbtUtils = Project(pluginName, file("."), settings = Seq(
       version := pluginVersion,
       sbtPlugin := true,
       organization := "uk.gov.hmrc",
