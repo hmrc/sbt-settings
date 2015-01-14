@@ -29,7 +29,7 @@ object DefaultBuildSettings {
     targetJvm := "jvm-1.8"
 
     Seq(
-      scalaVersion := "2.11.2",
+      scalaVersion := "2.11.5",
       scalacOptions ++= Seq(
         "-unchecked",
         "-deprecation",
