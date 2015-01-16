@@ -30,7 +30,7 @@ object PluginBuild extends Build {
         Opts.resolver.sonatypeReleases,
         Opts.resolver.sonatypeSnapshots
       ),
-      addSbtPlugin("uk.gov.hmrc" % "sbt-git-stamp" % "4.2.0"),
+      addSbtPlugin("uk.gov.hmrc" % "sbt-git-stamp" % "4.3.0"),
       addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.3.2"),
       publishArtifact := true,
       publishArtifact in Test := false
