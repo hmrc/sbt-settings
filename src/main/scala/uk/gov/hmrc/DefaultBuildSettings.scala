@@ -48,7 +48,7 @@ object DefaultBuildSettings {
       initialCommands in console := "import " + organization + "._",
       parallelExecution in Test := false,
       fork in Test := false,
-      isSnapshot := version.value.contains("SNAPSHOT")
+      isSnapshot := version.value.matches("([\\w]+\\-SNAPSHOT)|([\\.\\w]+)\\-([\\d]+)\\-([\\w]+)")
     ) ++ gitStampSettings
 
     if (addScalaTestReports) ds ++ addTestReportOption(Test) else ds
