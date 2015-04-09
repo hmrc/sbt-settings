@@ -26,44 +26,37 @@ object PluginBuild extends Build {
       sbtPlugin := true,
       organization := "uk.gov.hmrc",
       scalaVersion := "2.10.4",
-      resolvers ++= Seq(
-        Opts.resolver.sonatypeReleases,
-        Opts.resolver.sonatypeSnapshots
-      ),
-      addSbtPlugin("uk.gov.hmrc" % "sbt-git-stamp" % "4.5.0"),
+      addSbtPlugin("uk.gov.hmrc" % "sbt-git-stamp" % "4.6.0"),
       addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.3.2"),
+      resolvers += Resolver.url("hmrc-sbt-plugin-releases",
+        url("https://dl.bintray.com/hmrc/sbt-plugin-releases"))(Resolver.ivyStylePatterns),
       publishArtifact := true,
       publishArtifact in Test := false
-    ) ++ SonatypeBuild()
+    ) ++ BuildDescriptionSettings()
   )
 }
 
 
-object SonatypeBuild {
+object BuildDescriptionSettings {
 
-  import xerial.sbt.Sonatype._
-
-  def apply() = {
-    sonatypeSettings ++ Seq(
-      pomExtra := (<url>https://www.gov.uk/government/organisations/hm-revenue-customs</url>
-        <licenses>
-          <license>
-            <name>Apache 2</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-          </license>
-        </licenses>
-        <scm>
-          <connection>scm:git@github.com:hmrc/sbt-utils.git</connection>
-          <developerConnection>scm:git@github.com:hmrc/sbt-utils.git</developerConnection>
-          <url>git@github.com:hmrc/sbt-utils.git</url>
-        </scm>
-        <developers>
-          <developer>
-            <id>duncancrawford</id>
-            <name>Duncan Crawford</name>
-            <url>http://www.equalexperts.com</url>
-          </developer>
-        </developers>)
-    )
-  }
+  def apply() =
+    pomExtra := <url>https://www.gov.uk/government/organisations/hm-revenue-customs</url>
+      <licenses>
+        <license>
+          <name>Apache 2</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+      </licenses>
+      <scm>
+        <connection>scm:git@github.com:hmrc/sbt-utils.git</connection>
+        <developerConnection>scm:git@github.com:hmrc/sbt-utils.git</developerConnection>
+        <url>git@github.com:hmrc/sbt-utils.git</url>
+      </scm>
+      <developers>
+        <developer>
+          <id>duncancrawford</id>
+          <name>Duncan Crawford</name>
+          <url>http://www.equalexperts.com</url>
+        </developer>
+      </developers>
 }
