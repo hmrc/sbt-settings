@@ -18,10 +18,12 @@ package uk.gov.hmrc
 import _root_.sbt._
 import sbt.Keys._
 import sbt.Configuration
+import sbt.Package._
+import uk.gov.hmrc.gitstamp.GitStamp._
+
+import scala.collection.JavaConversions._
 
 object DefaultBuildSettings {
-
-  import uk.gov.hmrc.GitStampPlugin._
 
   lazy val targetJvm = settingKey[String]("The version of the JVM the build targets")
 
@@ -49,7 +51,7 @@ object DefaultBuildSettings {
       parallelExecution in Test := false,
       fork in Test := false,
       isSnapshot := version.value.matches("([\\w]+\\-SNAPSHOT)|([\\.\\w]+)\\-([\\d]+)\\-([\\w]+)")
-    ) ++ gitStampSettings
+    ) ++ gitStampInfo
 
     if (addScalaTestReports) ds ++ addTestReportOption(Test) else ds
   }
@@ -57,6 +59,11 @@ object DefaultBuildSettings {
   def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
     val testResultDir = "target/" + directory
     testOptions in conf += Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
+  }
+
+  private def gitStampInfo() = {
+    Seq(packageOptions <+= (packageOptions in Compile, packageOptions in packageBin) map {(a, b) =>
+      ManifestAttributes(gitStamp.toSeq: _*)})
   }
 }
 

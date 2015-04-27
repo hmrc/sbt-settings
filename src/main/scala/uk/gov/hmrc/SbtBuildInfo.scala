@@ -17,11 +17,12 @@ package uk.gov.hmrc
 
 import sbt.Keys._
 import sbt._
+import sbtbuildinfo.Plugin
+import SbtGitInfo.gitInfo
 
 object SbtBuildInfo {
 
   import sbtbuildinfo.Plugin._
-  import uk.gov.hmrc.GitStampPlugin.repoInfo
 
   def apply() = buildInfoSettings ++
     Seq(
@@ -38,17 +39,19 @@ object SbtBuildInfo {
         scalaVersion,
         sbtVersion,
         libraryDependencies,
-        BuildInfoKey.action("builtAt") {
-          val dtf = new java.text.SimpleDateFormat("yyyy-MM-dd")
-          dtf.setTimeZone(java.util.TimeZone.getTimeZone("UTC"))
-          dtf.format(new java.util.Date())
-        }) ++ gitInfo
+        BuildInfoKey.action("builtAt") {now}) ++ gitInfo.map {toBuildInfo}
     )
 
-  val gitInfo = repoInfo.map {
+  private def now: String = {
+    val dtf = new java.text.SimpleDateFormat("yyyy-MM-dd")
+    dtf.setTimeZone(java.util.TimeZone.getTimeZone("UTC"))
+    dtf.format(new java.util.Date())
+  }
+
+  private def toBuildInfo: ((String, String)) => Plugin.BuildInfoKey.Entry[String] = {
     t =>
       BuildInfoKey.action(t._1.replaceAll("-", "")) {
         t._2
       }
-  }.toSeq
+  }
 }
