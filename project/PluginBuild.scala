@@ -19,14 +19,14 @@ import Keys._
 object PluginBuild extends Build {
 
   val pluginName = "sbt-utils"
-  val pluginVersion = "2.7.0-SNAPSHOT"
+  val pluginVersion = "2.7.0"
 
   lazy val sbtUtils = Project(pluginName, file("."), settings = Seq(
       version := pluginVersion,
       sbtPlugin := true,
       organization := "uk.gov.hmrc",
       scalaVersion := "2.10.4",
-      addSbtPlugin("uk.gov.hmrc" % "sbt-git-stamp" % "4.6.0"),
+      addSbtPlugin("uk.gov.hmrc" % "sbt-git-stamp" % "4.7.0"),
       addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.3.2"),
       resolvers += Resolver.url("hmrc-sbt-plugin-releases",
         url("https://dl.bintray.com/hmrc/sbt-plugin-releases"))(Resolver.ivyStylePatterns),
