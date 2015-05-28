@@ -15,14 +15,13 @@
  */
 import sbt._
 import Keys._
+import uk.gov.hmrc.versioning.SbtGitVersioning
 
 object PluginBuild extends Build {
 
   val pluginName = "sbt-utils"
-  val pluginVersion = "2.7.0"
 
   lazy val sbtUtils = Project(pluginName, file("."), settings = Seq(
-      version := pluginVersion,
       sbtPlugin := true,
       organization := "uk.gov.hmrc",
       scalaVersion := "2.10.4",
@@ -34,7 +33,7 @@ object PluginBuild extends Build {
       publishArtifact := true,
       publishArtifact in Test := false
     ) ++ BuildDescriptionSettings()
-  )
+  ).enablePlugins(SbtGitVersioning)
 }
 
 
