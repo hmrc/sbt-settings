@@ -25,11 +25,9 @@ object PluginBuild extends Build {
       sbtPlugin := true,
       organization := "uk.gov.hmrc",
       scalaVersion := "2.10.4",
-      libraryDependencies ++= Seq(
-        "uk.gov.hmrc" %% "git-stamp" % "0.2.0"
-      ),
+      resolvers += Resolver.url("hmrc-sbt-plugin-releases", url("https://dl.bintray.com/hmrc/sbt-plugin-releases"))(Resolver.ivyStylePatterns),
+      addSbtPlugin("uk.gov.hmrc" % "sbt-git-stamp" % "5.1.0"),
       addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.3.2"),
-      resolvers += Resolver.bintrayRepo("hmrc", "releases"),
       publishArtifact := true,
       publishArtifact in Test := false
     ) ++ BuildDescriptionSettings()
