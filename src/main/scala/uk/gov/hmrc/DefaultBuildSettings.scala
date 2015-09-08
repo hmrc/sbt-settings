@@ -41,8 +41,8 @@ object DefaultBuildSettings {
 
       javacOptions ++= Seq(
         "-Xlint",
-        "-source:" + targetJvm.value.stripPrefix("jvm-"),
-        "-target:" + targetJvm.value.stripPrefix("jvm-"),
+        "-source", targetJvm.value.stripPrefix("jvm-"),
+        "-target", targetJvm.value.stripPrefix("jvm-"),
         "-Xmax-classfile-name", "100",
         "-encoding", "UTF-8"
       )
