@@ -61,8 +61,9 @@ object DefaultBuildSettings {
   }
 
   def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
-    val testResultDir = "target/" + directory
-    testOptions in conf += Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
+    val testResultDir = s"target/$directory"
+    testOptions in conf += Tests.Argument(TestFrameworks.ScalaTest, "-o", "-u", testResultDir, "-h", s"$testResultDir/html-report")
+    testOptions in conf += Tests.Argument(TestFrameworks.JUnit, "-a", "-v", "-q")
   }
 
   private def gitStampInfo() = {
