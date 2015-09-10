@@ -26,9 +26,9 @@ import sbtbuildinfo.Plugin
 
 object PluginBuild extends Build {
 
-  val pluginName = "sbt-utils"
+  val pluginName = "sbt-settings"
 
-  lazy val sbtUtils = Project(pluginName, file("."), settings = Seq(
+  lazy val sbtSettings = Project(pluginName, file("."), settings = Seq(
       sbtPlugin := true,
       organization := "uk.gov.hmrc",
       scalaVersion := "2.10.4",
@@ -46,89 +46,6 @@ object SbtGitInfo {
   lazy val gitInfo:Seq[(String, String)] = gitStamp.toSeq
 }
 
-
-//object SbtBuildInfo {
-//
-//  import sbtbuildinfo.Plugin._
-//
-//  def apply() = buildInfoSettings ++
-//    Seq(
-//      buildInfo <<= (sourceManaged in Compile,
-//        buildInfoObject, buildInfoPackage, buildInfoKeys, thisProjectRef, state, streams) map {
-//        (dir, obj, pkg, keys, ref, state, taskStreams) =>
-//          Seq(BuildInfo(dir / "sbt-buildinfo", obj, pkg, keys, ref, state, taskStreams.cacheDirectory))
-//      },
-//      sourceGenerators in Compile <+= buildInfo,
-//      buildInfoPackage := organization.value,
-//      buildInfoKeys := Seq[BuildInfoKey](
-//        name,
-//        version,
-//        scalaVersion,
-//        sbtVersion,
-//        libraryDependencies,
-//        BuildInfoKey.action("builtAt") {now}) ++ SbtGitInfo.gitInfo.map {toBuildInfo}
-//    )
-//
-//  private def now: String = {
-//    val dtf = new java.text.SimpleDateFormat("yyyy-MM-dd")
-//    dtf.setTimeZone(java.util.TimeZone.getTimeZone("UTC"))
-//    dtf.format(new java.util.Date())
-//  }
-//
-//  private def toBuildInfo: ((String, String)) => Plugin.BuildInfoKey.Entry[String] = {
-//    t =>
-//      BuildInfoKey.action(t._1.replaceAll("-", "")) {
-//        t._2
-//      }
-//  }
-//}
-
-//object DefaultBuildSettings {
-//
-//  lazy val targetJvm = settingKey[String]("The version of the JVM the build targets")
-//
-//  lazy val scalaSettings : Seq[Setting[_]] = {
-//    targetJvm := "jvm-1.8"
-//
-//    Seq(
-//      scalaVersion := "2.11.6",
-//      scalacOptions ++= Seq(
-//        "-unchecked",
-//        "-deprecation",
-//        "-Xlint",
-//        "-language:_",
-//        "-target:" + targetJvm.value,
-//        "-Xmax-classfile-name", "100",
-//        "-encoding", "UTF-8"
-//      )
-//    )
-//  }
-//
-//  def defaultSettings(addScalaTestReports: Boolean = true) : Seq[Setting[_]] = {
-//    val ds = Seq(
-//      organization := "uk.gov.hmrc",
-//      initialCommands in console := "import " + organization + "._",
-//      parallelExecution in Test := false,
-//      fork in Test := false,
-//      isSnapshot := version.value.matches("([\\w]+\\-SNAPSHOT)|([\\.\\w]+)\\-([\\d]+)\\-([\\w]+)")
-//    ) ++ gitStampInfo
-//
-//    if (addScalaTestReports) ds ++ addTestReportOption(Test) else ds
-//  }
-//
-//  def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
-//    val testResultDir = "target/" + directory
-//    testOptions in conf += Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
-//  }
-//
-//  private def gitStampInfo() = {
-//    Seq(packageOptions <+= (packageOptions in Compile, packageOptions in packageBin) map {(a, b) =>
-//      ManifestAttributes(gitStamp.toSeq: _*)})
-//  }
-//}
-
-
-
 object BuildDescriptionSettings {
 
   def apply() =
@@ -140,8 +57,8 @@ object BuildDescriptionSettings {
         </license>
       </licenses>
       <scm>
-        <connection>scm:git@github.com:hmrc/sbt-utils.git</connection>
-        <developerConnection>scm:git@github.com:hmrc/sbt-utils.git</developerConnection>
+        <connection>scm:git@github.com:hmrc/sbt-settings.git</connection>
+        <developerConnection>scm:git@github.com:hmrc/sbt-settings.git</developerConnection>
         <url>git@github.com:hmrc/sbt-utils.git</url>
       </scm>
       <developers>
