@@ -1,9 +1,9 @@
-sbt-utils
+sbt-settings
 =========
 
-[![Build Status](https://travis-ci.org/hmrc/sbt-utils.svg?branch=master)](https://travis-ci.org/hmrc/sbt-utils) [ ![Download](https://api.bintray.com/packages/hmrc/sbt-plugin-releases/sbt-utils/images/download.svg) ](https://bintray.com/hmrc/sbt-plugin-releases/sbt-utils/_latestVersion)
+[![Build Status](https://travis-ci.org/hmrc/sbt-settings.svg?branch=master)](https://travis-ci.org/hmrc/sbt-settings) [ ![Download](https://api.bintray.com/packages/hmrc/sbt-plugin-releases/sbt-settings/images/download.svg) ](https://bintray.com/hmrc/sbt-plugin-releases/sbt-settings/_latestVersion)
 
-SBT plugin that provides common utility functions and configurations
+SBT plugin that provides standard functions and configurations
 
 ## License ##
  
