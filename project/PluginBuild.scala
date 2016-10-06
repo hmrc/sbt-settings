@@ -59,7 +59,7 @@ object BuildDescriptionSettings {
       <scm>
         <connection>scm:git@github.com:hmrc/sbt-settings.git</connection>
         <developerConnection>scm:git@github.com:hmrc/sbt-settings.git</developerConnection>
-        <url>git@github.com:hmrc/sbt-utils.git</url>
+        <url>git@github.com:hmrc/sbt-settings.git</url>
       </scm>
       <developers>
         <developer>
