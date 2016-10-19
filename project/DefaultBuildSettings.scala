@@ -26,7 +26,7 @@ object DefaultBuildSettings {
     targetJvm := "jvm-1.8"
 
     Seq(
-      scalaVersion := "2.11.6",
+      scalaVersion := "2.11.8",
       scalacOptions ++= Seq(
         "-unchecked",
         "-deprecation",
@@ -51,7 +51,7 @@ object DefaultBuildSettings {
     if (addScalaTestReports) ds ++ addTestReportOption(Test) else ds
   }
 
-  def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
+  private def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
     val testResultDir = "target/" + directory
     testOptions in conf += Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
   }
