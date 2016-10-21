@@ -59,9 +59,9 @@ object DefaultBuildSettings {
   }
 
 
-  def addTestReportOption(directory: String = "test-reports") = {
+  def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
     val testResultDir = "target/" + directory
-    Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
+    testOptions in conf += Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
   }
 
   private def gitStampInfo() = {
