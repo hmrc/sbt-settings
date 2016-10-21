@@ -31,7 +31,7 @@ object DefaultBuildSettings {
     targetJvm := "jvm-1.8"
 
     Seq(
-      scalaVersion := "2.11.6",
+      scalaVersion := "2.11.8",
       scalacOptions ++= Seq(
         "-Xlint",
         "-target:" + targetJvm.value,
@@ -48,17 +48,16 @@ object DefaultBuildSettings {
     )
   }
 
-  def defaultSettings(addScalaTestReports: Boolean = true) : Seq[Setting[_]] = {
-    val ds = Seq(
+  def defaultSettings() : Seq[Setting[_]] = {
+    Seq(
       organization := "uk.gov.hmrc",
       initialCommands in console := "import " + organization + "._",
       parallelExecution in Test := false,
       fork in Test := false,
       isSnapshot := version.value.matches("([\\w]+\\-SNAPSHOT)|([\\.\\w]+)\\-([\\d]+)\\-([\\w]+)")
     ) ++ gitStampInfo
-
-    if (addScalaTestReports) ds ++ addTestReportOption(Test) else ds
   }
+
 
   def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
     val testResultDir = "target/" + directory
