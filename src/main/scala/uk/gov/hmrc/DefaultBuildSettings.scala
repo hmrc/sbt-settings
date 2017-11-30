@@ -51,7 +51,7 @@ object DefaultBuildSettings {
   def defaultSettings(addScalaTestReports: Boolean = true) : Seq[Setting[_]] = {
     val ds = Seq(
       organization := "uk.gov.hmrc",
-      initialCommands in console := "import " + organization + "._",
+      initialCommands in console := "import " + organization.value + "._",
       parallelExecution in Test := false,
       fork in Test := false,
       isSnapshot := version.value.matches("([\\w]+\\-SNAPSHOT)|([\\.\\w]+)\\-([\\d]+)\\-([\\w]+)")
