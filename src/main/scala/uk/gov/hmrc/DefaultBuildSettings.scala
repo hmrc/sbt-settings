@@ -15,19 +15,17 @@
  */
 package uk.gov.hmrc
 
-import _root_.sbt._
+import _root_.sbt.{Configuration, _}
 import sbt.Keys._
-import sbt.Configuration
 import sbt.Package._
+import sbt.Tests.{Group, SubProcess}
 import uk.gov.hmrc.gitstamp.GitStamp._
-
-import scala.collection.JavaConversions._
 
 object DefaultBuildSettings {
 
   lazy val targetJvm = settingKey[String]("The version of the JVM the build targets")
 
-  lazy val scalaSettings : Seq[Setting[_]] = {
+  lazy val scalaSettings: Seq[Setting[_]] = {
     targetJvm := "jvm-1.8"
 
     Seq(
@@ -48,7 +46,7 @@ object DefaultBuildSettings {
     )
   }
 
-  def defaultSettings(addScalaTestReports: Boolean = true) : Seq[Setting[_]] = {
+  def defaultSettings(addScalaTestReports: Boolean = true): Seq[Setting[_]] = {
     val ds = Seq(
       organization := "uk.gov.hmrc",
       parallelExecution in Test := false,
@@ -58,6 +56,19 @@ object DefaultBuildSettings {
 
     if (addScalaTestReports) ds ++ addTestReportOption(Test) else ds
   }
+
+  def integrationTestSettings(): Seq[Setting[_]] = inConfig(IntegrationTest)(Defaults.itSettings) ++ Seq(
+    Keys.fork in IntegrationTest := false,
+    unmanagedSourceDirectories in IntegrationTest := (baseDirectory in IntegrationTest)(base => Seq(base / "it")).value,
+    addTestReportOption(IntegrationTest, "int-test-reports"),
+    testGrouping in IntegrationTest := oneForkedJvmPerTest((definedTests in IntegrationTest).value),
+    parallelExecution in IntegrationTest := false
+  )
+
+  private def oneForkedJvmPerTest(tests: Seq[TestDefinition]): Seq[Group] =
+    tests map { test =>
+      Group(test.name, Seq(test), SubProcess(ForkOptions(runJVMOptions = Seq("-Dtest.name=" + test.name))))
+    }
 
   def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
     val testResultDir = "target/" + directory
