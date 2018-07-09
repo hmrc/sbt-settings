@@ -51,7 +51,7 @@ object DefaultBuildSettings {
       organization := "uk.gov.hmrc",
       parallelExecution in Test := false,
       fork in Test := false,
-      isSnapshot := version.value.matches("([\\w]+\\-SNAPSHOT)|([\\.\\w]+)\\-([\\d]+)\\-([\\w]+)")
+      isSnapshot := version.value.matches("([\\w\\.]+\\-SNAPSHOT)|([\\.\\w]+)\\-([\\d]+)\\-([\\w]+)")
     ) ++ gitStampInfo
 
     if (addScalaTestReports) ds ++ addTestReportOption(Test) else ds
