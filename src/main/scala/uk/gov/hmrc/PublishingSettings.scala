@@ -22,13 +22,13 @@ object PublishingSettings {
   val SbtCredentials = Credentials(Path.userHome / ".sbt" / ".credentials")
 
   def publishToSettings(snapshots : Resolver, releases : Resolver) : Seq[Setting[_]] = Seq(
-    publishTo <<= version {
+    publishTo := version {
     (v: String) =>
       if (v.trim.endsWith("SNAPSHOT"))
         Some(snapshots)
       else
         Some(releases)
-    }
+    }.value
   )
 
   val publishAllArtefacts = Seq(

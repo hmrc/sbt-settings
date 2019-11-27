@@ -15,11 +15,10 @@
  */
 package uk.gov.hmrc
 
-import _root_.sbt.{Configuration, _}
+import _root_.sbt.{Configuration, Def, _}
 import sbt.Keys._
-import sbt.Package._
-import sbt.Tests.{Group, SubProcess}
-import uk.gov.hmrc.gitstamp.GitStamp._
+import sbt.Tests.Group
+import uk.gov.hmrc.gitstamp.GitStampPlugin
 
 object DefaultBuildSettings {
 
@@ -66,18 +65,12 @@ object DefaultBuildSettings {
   )
 
   private def oneForkedJvmPerTest(tests: Seq[TestDefinition]): Seq[Group] =
-    tests map { test =>
-      Group(test.name, Seq(test), SubProcess(ForkOptions(runJVMOptions = Seq("-Dtest.name=" + test.name))))
-    }
+    ForkedJvmPerTestSettings.oneForkedJvmPerTest(tests)
 
   def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
     val testResultDir = "target/" + directory
     testOptions in conf += Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
   }
 
-  private def gitStampInfo() = {
-    Seq(packageOptions <+= (packageOptions in Compile, packageOptions in packageBin) map {(a, b) =>
-      ManifestAttributes(gitStamp.toSeq: _*)})
-  }
+  private def gitStampInfo(): Seq[Def.Setting[Task[Seq[PackageOption]]]] = GitStampPlugin.gitStampSettings
 }
-
