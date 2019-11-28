@@ -33,7 +33,7 @@ object SbtBuildInfo {
       sbtVersion,
       libraryDependencies,
       BuildInfoKey.action("builtAt") {now}) ++ gitInfo.map {toBuildInfo},
-    buildInfoOptions += BuildInfoOption.ToMap
+    buildInfoOptions := Seq(BuildInfoOption.ToMap)
   )
 
   def now: String = {
