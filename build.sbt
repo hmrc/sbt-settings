@@ -3,7 +3,7 @@ val pluginName = "sbt-settings"
 lazy val sbtSettings = Project(pluginName, file("."))
   .enablePlugins(SbtGitVersioning, SbtArtifactory, BuildInfoPlugin)
   .settings(
-    majorVersion := 3,
+    majorVersion := 4,
     makePublicallyAvailableOnBintray := true,
     sbtPlugin := true,
     scalaVersion := "2.10.7",
