@@ -17,41 +17,34 @@ package uk.gov.hmrc
 
 import sbt.Keys._
 import sbt._
-import sbtbuildinfo.Plugin
-import SbtGitInfo.gitInfo
+import sbtbuildinfo.BuildInfoKey
+import sbtbuildinfo.BuildInfoKeys.buildInfoKeys
+import sbtbuildinfo.BuildInfoPlugin.autoImport.{BuildInfoOption, buildInfoOptions}
+import uk.gov.hmrc.SbtGitInfo.gitInfo
 
 object SbtBuildInfo {
 
-  import sbtbuildinfo.Plugin._
+  // Add additional keys to the generated BuildInfo output, including git info pulled from sbt-git-stamp plugin
+  def apply(): Seq[Def.Setting[_]] = Seq(
+    buildInfoKeys := Seq[BuildInfoKey](
+      name,
+      version,
+      scalaVersion,
+      sbtVersion,
+      libraryDependencies,
+      BuildInfoKey.action("builtAt") {now}) ++ gitInfo.map {toBuildInfo},
+    buildInfoOptions := Seq(BuildInfoOption.ToMap)
+  )
 
-  def apply() = buildInfoSettings ++
-    Seq(
-      buildInfo <<= (sourceManaged in Compile,
-        buildInfoObject, buildInfoPackage, buildInfoKeys, thisProjectRef, state, streams) map {
-        (dir, obj, pkg, keys, ref, state, taskStreams) =>
-          Seq(BuildInfo(dir / "sbt-buildinfo", obj, pkg, keys, ref, state, taskStreams.cacheDirectory))
-      },
-      sourceGenerators in Compile <+= buildInfo,
-      buildInfoPackage := organization.value,
-      buildInfoKeys := Seq[BuildInfoKey](
-        name,
-        version,
-        scalaVersion,
-        sbtVersion,
-        libraryDependencies,
-        BuildInfoKey.action("builtAt") {now}) ++ gitInfo.map {toBuildInfo}
-    )
-
-  private def now: String = {
+  def now: String = {
     val dtf = new java.text.SimpleDateFormat("yyyy-MM-dd")
     dtf.setTimeZone(java.util.TimeZone.getTimeZone("UTC"))
     dtf.format(new java.util.Date())
   }
 
-  private def toBuildInfo: ((String, String)) => Plugin.BuildInfoKey.Entry[String] = {
-    t =>
-      BuildInfoKey.action(t._1.replaceAll("-", "")) {
-        t._2
-      }
+  //Map extracted values from sbt-git-stamp plugin to build info keys, dropping hypens in the name
+  private def toBuildInfo: ((String, String)) => BuildInfoKey.Entry[String] = {
+    case (gitKey, value) => BuildInfoKey.action(gitKey.replaceAll("-", "")) {  value}
   }
+
 }

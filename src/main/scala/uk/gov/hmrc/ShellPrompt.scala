@@ -15,19 +15,22 @@
  */
 package uk.gov.hmrc
 
+import sbt.{Project, State}
+
+import scala.sys.process.ProcessLogger
+
 //Credit goes to the Reactivemongo gents for this utility
 object ShellPrompt {
 
-  import _root_.sbt._
-
   object devnull extends ProcessLogger {
-    def info(s: => String) {}
+    def out(s: => String) {}
 
-    def error(s: => String) {}
+    def err(s: => String) {}
 
     def buffer[T](f: => T): T = f
   }
 
+  import scala.sys.process._
   def currBranch = (
     ("git status -sb" lines_! devnull headOption)
       getOrElse "-" stripPrefix "## "
