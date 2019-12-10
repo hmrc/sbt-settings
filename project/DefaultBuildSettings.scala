@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import sbt.{Configuration, _}
 import sbt.Keys._
-import sbt.Package._
-import uk.gov.hmrc.gitstamp.GitStamp._
+import sbt.{Configuration, _}
+import uk.gov.hmrc.gitstamp.GitStampPlugin
 
 object DefaultBuildSettings {
 
@@ -26,7 +25,7 @@ object DefaultBuildSettings {
     targetJvm := "jvm-1.8"
 
     Seq(
-      scalaVersion := "2.11.11",
+      scalaVersion := "2.12.10",
       scalacOptions ++= Seq(
         "-unchecked",
         "-deprecation",
@@ -56,9 +55,6 @@ object DefaultBuildSettings {
     testOptions in conf += Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
   }
 
-  private def gitStampInfo() = {
-    Seq(packageOptions <+= (packageOptions in Compile, packageOptions in packageBin) map {(a, b) =>
-      ManifestAttributes(gitStamp.toSeq: _*)})
-  }
+  private def gitStampInfo() = GitStampPlugin.gitStampSettings
 }
 
