@@ -30,6 +30,8 @@ object DefaultBuildSettings {
     Seq(
       scalaVersion := "2.11.12",
       scalacOptions ++= Seq(
+        "-unchecked",
+        "-deprecation",
         "-Xlint",
         "-target:" + targetJvm.value,
         "-Xmax-classfile-name", "100",
