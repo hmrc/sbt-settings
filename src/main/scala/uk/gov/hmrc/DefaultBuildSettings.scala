@@ -35,7 +35,8 @@ object DefaultBuildSettings {
         "-Xlint",
         "-target:" + targetJvm.value,
         "-Xmax-classfile-name", "100",
-        "-encoding", "UTF-8"
+        "-encoding", "UTF-8",
+        "-Ywarn-macros:after" // this was default behaviour uptill 2.12.4. https://github.com/scala/bug/issues/10571
       ),
 
       javacOptions ++= Seq(
