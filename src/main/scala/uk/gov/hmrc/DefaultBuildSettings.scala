@@ -37,10 +37,15 @@ object DefaultBuildSettings {
         "-Xmax-classfile-name", "100",
         "-encoding", "UTF-8"
         ) ++
-          (if (sbtVersion.value.startsWith("0.13."))
+          {def toLong(v: String): Long =
+             v.split("\\.") match {
+               case Array(maj, min, pat) => maj.toInt * 1000 + min.toInt * 1000 + pat.toInt
+               case _                    => 0
+             }
+           if (toLong(scalaVersion.value) < toLong("2.12.4"))
              Seq.empty
            else Seq("-Ywarn-macros:after") // this was default behaviour uptill 2.12.4. https://github.com/scala/bug/issues/10571
-          ),
+          },
 
       javacOptions ++= Seq(
         "-Xlint",
