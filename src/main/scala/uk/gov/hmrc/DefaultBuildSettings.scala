@@ -19,6 +19,8 @@ import _root_.sbt.{Configuration, Def, _}
 import sbt.Keys._
 import sbt.Tests.Group
 import uk.gov.hmrc.gitstamp.GitStampPlugin
+import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport.headerSettings
+import de.heikoseeberger.sbtheader.AutomateHeaderPlugin.autoImport.automateHeaderSettings
 
 object DefaultBuildSettings {
 
@@ -56,32 +58,33 @@ object DefaultBuildSettings {
     )
   }
 
-  def defaultSettings(addScalaTestReports: Boolean = true): Seq[Setting[_]] = {
-    val ds = Seq(
+  def defaultSettings(addScalaTestReports: Boolean = true): Seq[Setting[_]] =
+    Seq(
       organization := "uk.gov.hmrc",
       parallelExecution in Test := false,
       fork in Test := false,
       isSnapshot := version.value.matches("([\\w\\.]+\\-SNAPSHOT)|([\\.\\w]+)\\-([\\d]+)\\-([\\w]+)")
-    ) ++ gitStampInfo
+    ) ++
+    GitStampPlugin.gitStampSettings ++
+    (if (addScalaTestReports) addTestReportOption(Test) else Seq.empty)
 
-    if (addScalaTestReports) ds ++ addTestReportOption(Test) else ds
-  }
-
-  def integrationTestSettings(): Seq[Setting[_]] = inConfig(IntegrationTest)(Defaults.itSettings) ++ Seq(
-    Keys.fork in IntegrationTest := false,
-    unmanagedSourceDirectories in IntegrationTest := (baseDirectory in IntegrationTest)(base => Seq(base / "it")).value,
-    addTestReportOption(IntegrationTest, "int-test-reports"),
-    testGrouping in IntegrationTest := oneForkedJvmPerTest((definedTests in IntegrationTest).value),
-    parallelExecution in IntegrationTest := false
-  )
-
-  private def oneForkedJvmPerTest(tests: Seq[TestDefinition]): Seq[Group] =
-    ForkedJvmPerTestSettings.oneForkedJvmPerTest(tests)
+  def integrationTestSettings(enableLicenseHeaders: Boolean = true): Seq[Setting[_]] =
+    inConfig(IntegrationTest)(Defaults.itSettings) ++
+    Seq(
+      Keys.fork in IntegrationTest := false,
+      unmanagedSourceDirectories in IntegrationTest := (baseDirectory in IntegrationTest)(base => Seq(base / "it")).value,
+      addTestReportOption(IntegrationTest, "int-test-reports"),
+      testGrouping in IntegrationTest := ForkedJvmPerTestSettings.oneForkedJvmPerTest((definedTests in IntegrationTest).value),
+      parallelExecution in IntegrationTest := false
+    ) ++
+    (if (enableLicenseHeaders) {
+       headerSettings(IntegrationTest) ++
+       automateHeaderSettings(IntegrationTest)
+     } else Seq.empty
+    )
 
   def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
     val testResultDir = "target/" + directory
     testOptions in conf += Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
   }
-
-  private def gitStampInfo(): Seq[Def.Setting[Task[Seq[PackageOption]]]] = GitStampPlugin.gitStampSettings
 }
