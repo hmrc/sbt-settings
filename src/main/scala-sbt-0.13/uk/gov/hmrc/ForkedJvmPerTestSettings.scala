@@ -21,9 +21,9 @@ import sbt._
 import scala.language.postfixOps
 
 object ForkedJvmPerTestSettings {
-  def oneForkedJvmPerTest(tests: Seq[TestDefinition]): Seq[Group] = tests map { test =>
+  def oneForkedJvmPerTest(tests: Seq[TestDefinition], forkJvmOptions: Seq[String] = Seq.empty): Seq[Group] = tests map { test =>
     Group(test.name, Seq(test), SubProcess(ForkOptions(
-      runJVMOptions = Seq("-Dtest.name=" + test.name))
-    ))
+      runJVMOptions = forkJvmOptions ++ Seq("-Dtest.name=" + test.name)
+    )))
   }
 }
