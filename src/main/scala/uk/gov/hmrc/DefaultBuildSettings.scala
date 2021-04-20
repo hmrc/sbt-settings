@@ -74,7 +74,10 @@ object DefaultBuildSettings {
       Keys.fork in IntegrationTest := false,
       unmanagedSourceDirectories in IntegrationTest := (baseDirectory in IntegrationTest)(base => Seq(base / "it")).value,
       addTestReportOption(IntegrationTest, "int-test-reports"),
-      testGrouping in IntegrationTest := ForkedJvmPerTestSettings.oneForkedJvmPerTest((definedTests in IntegrationTest).value),
+      testGrouping in IntegrationTest := ForkedJvmPerTestSettings.oneForkedJvmPerTest(
+        (definedTests in IntegrationTest).value,
+        (javaOptions in IntegrationTest).value
+      ),
       parallelExecution in IntegrationTest := false
     ) ++
     (if (enableLicenseHeaders) {
