@@ -47,4 +47,3 @@ object ShellPrompt {
 
   def apply(buildVersion : String) = buildShellPrompt(buildVersion)
 }
-
