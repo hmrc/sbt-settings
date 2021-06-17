@@ -62,7 +62,6 @@ object DefaultBuildSettings {
     Seq(
       organization := "uk.gov.hmrc",
       parallelExecution in Test := false,
-      fork in Test := false,
       isSnapshot := version.value.matches("([\\w\\.]+\\-SNAPSHOT)|([\\.\\w]+)\\-([\\d]+)\\-([\\w]+)")
     ) ++
     GitStampPlugin.gitStampSettings ++

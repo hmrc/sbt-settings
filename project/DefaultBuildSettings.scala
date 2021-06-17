@@ -38,23 +38,17 @@ object DefaultBuildSettings {
     )
   }
 
-  def defaultSettings(addScalaTestReports: Boolean = true) : Seq[Setting[_]] = {
-    val ds = Seq(
+  def defaultSettings(addScalaTestReports: Boolean = true) : Seq[Setting[_]] =
+    Seq(
       organization := "uk.gov.hmrc",
-      initialCommands in console := "import " + organization + "._",
-      parallelExecution in Test := false,
-      fork in Test := false,
+      console / initialCommands := "import " + organization + "._",
+      Test / parallelExecution := false,
       isSnapshot := version.value.matches("([\\w]+\\-SNAPSHOT)|([\\.\\w]+)\\-([\\d]+)\\-([\\w]+)")
-    ) ++ gitStampInfo
-
-    if (addScalaTestReports) ds ++ addTestReportOption(Test) else ds
-  }
+    ) ++ GitStampPlugin.gitStampSettings ++
+      (if (addScalaTestReports) addTestReportOption(Test) else Seq.empty)
 
   def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
     val testResultDir = "target/" + directory
-    testOptions in conf += Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
+    conf / testOptions += Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
   }
-
-  private def gitStampInfo() = GitStampPlugin.gitStampSettings
 }
-
