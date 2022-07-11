@@ -27,8 +27,6 @@ object DefaultBuildSettings {
   lazy val targetJvm = settingKey[String]("The version of the JVM the build targets")
 
   lazy val scalaSettings: Seq[Setting[_]] = {
-    targetJvm := "jvm-1.8"
-
     def toLong(v: String): Long =
       v.split("\\.") match {
         case Array(maj, min, pat) => maj.toInt * 1000 + min.toInt * 1000 + pat.toInt
@@ -43,6 +41,7 @@ object DefaultBuildSettings {
       }
 
     Seq(
+      targetJvm := "jvm-1.8",
       scalaVersion := "2.11.12",
       scalacOptions ++= Seq(
         "-unchecked",
