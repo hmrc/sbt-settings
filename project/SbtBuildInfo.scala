@@ -13,36 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import SbtGitInfo.gitInfo
 import sbt.Keys._
 import sbt._
 import sbtbuildinfo.BuildInfoKey
 import sbtbuildinfo.BuildInfoKeys._
 import sbtbuildinfo.BuildInfoPlugin.autoImport.{BuildInfoOption, buildInfoOptions}
+import uk.gov.hmrc.gitstamp.GitStamp.gitStamp
 
 object SbtBuildInfo {
 
   // Add additional keys to the generated BuildInfo output, including git info pulled from sbt-git-stamp plugin
   def apply(): Seq[Def.Setting[_]] = Seq(
     buildInfoKeys := Seq[BuildInfoKey](
-      name,
-      version,
-      scalaVersion,
-      sbtVersion,
-      libraryDependencies,
-      BuildInfoKey.action("builtAt") {now}) ++ gitInfo.map {toBuildInfo},
+        name,
+        version,
+        scalaVersion,
+        sbtVersion,
+        libraryDependencies,
+        BuildInfoKey.action("builtAt")(now)
+      ) ++ gitStamp.toSeq.map(toBuildInfo),
     buildInfoOptions += BuildInfoOption.ToMap
   )
 
-  def now: String = {
-    val dtf = new java.text.SimpleDateFormat("yyyy-MM-dd")
-    dtf.setTimeZone(java.util.TimeZone.getTimeZone("UTC"))
-    dtf.format(new java.util.Date())
-  }
+  def now: String =
+    java.time.LocalDate.now(java.time.ZoneId.of("UTC")).toString
 
   //Map extracted values from sbt-git-stamp plugin to build info keys, dropping hypens in the name
   private def toBuildInfo: ((String, String)) => BuildInfoKey.Entry[String] = {
-    case (gitKey, value) => BuildInfoKey.action(gitKey.replaceAll("-", "")) {  value}
+    case (gitKey, value) => BuildInfoKey.action(gitKey.replaceAll("-", ""))(value)
   }
-
 }

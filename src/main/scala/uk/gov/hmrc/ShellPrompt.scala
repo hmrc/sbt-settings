@@ -19,7 +19,10 @@ import sbt.{Project, State}
 
 import scala.sys.process.ProcessLogger
 
-//Credit goes to the Reactivemongo gents for this utility
+/** Credit goes to the Reactivemongo gents for this utility.
+  * Enable with the following in your build.sbt:
+  *   ThisBuild / shellPrompt := uk.gov.hmrc.ShellPrompt(version.value)
+  */
 object ShellPrompt {
 
   object devnull extends ProcessLogger {
@@ -31,19 +34,18 @@ object ShellPrompt {
   }
 
   import scala.sys.process._
-  def currBranch = (
-    ("git status -sb" lines_! devnull headOption)
-      getOrElse "-" stripPrefix "## "
-    )
+  def currBranch =
+    "git status -sb"
+      .lineStream_!(devnull)
+      .headOption
+      .getOrElse("-")
+      .stripPrefix("## ")
 
-  private def buildShellPrompt(buildVersion : String) = {
+  private def buildShellPrompt(buildVersion : String) =
     (state: State) => {
       val currProject = Project.extract(state).currentProject.id
-      "%s:%s:%s> ".format(
-        currProject, currBranch, buildVersion
-      )
+      "%s:%s:%s> ".format(currProject, currBranch, buildVersion)
     }
-  }
 
   def apply(buildVersion : String) = buildShellPrompt(buildVersion)
 }
