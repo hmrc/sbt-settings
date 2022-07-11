@@ -15,12 +15,11 @@
  */
 package uk.gov.hmrc
 
-import _root_.sbt.{Configuration, Def, _}
-import sbt.Keys._
-import sbt.Tests.Group
-import uk.gov.hmrc.gitstamp.GitStampPlugin
-import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport.headerSettings
+import _root_.sbt._
 import de.heikoseeberger.sbtheader.AutomateHeaderPlugin.autoImport.automateHeaderSettings
+import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport.headerSettings
+import sbt.Keys._
+import uk.gov.hmrc.gitstamp.GitStampPlugin
 
 object DefaultBuildSettings {
 
@@ -33,6 +32,13 @@ object DefaultBuildSettings {
       v.split("\\.") match {
         case Array(maj, min, pat) => maj.toInt * 1000 + min.toInt * 1000 + pat.toInt
         case _                    => 0
+      }
+
+    val javaMajorVersion: Int =
+      System.getProperty("java.version").split("\\.").toList match {
+        case "1" :: major :: _ => major.toInt
+        case major :: _        => major.toInt
+        case _                 => throw new Exception("Unable to determine java version")
       }
 
     Seq(
@@ -53,12 +59,19 @@ object DefaultBuildSettings {
            else Seq.empty
           ),
 
-      javacOptions ++= Seq(
+      javacOptions ++= (Seq(
         "-Xlint",
-        "-source", targetJvm.value.stripPrefix("jvm-"),
-        "-target", targetJvm.value.stripPrefix("jvm-"),
         "-encoding", "UTF-8"
-      )
+      ) ++ (if (javaMajorVersion >= 9) {
+        Seq(
+          "--release", targetJvm.value.stripPrefix("jvm-").stripPrefix("1.")
+        )
+      } else {
+        Seq(
+          "-source", targetJvm.value.stripPrefix("jvm-"),
+          "-target", targetJvm.value.stripPrefix("jvm-")
+        )
+      }))
     )
   }
 
