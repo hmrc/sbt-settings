@@ -15,10 +15,11 @@
  */
 package uk.gov.hmrc
 
-import _root_.sbt._
 import de.heikoseeberger.sbtheader.AutomateHeaderPlugin.autoImport.automateHeaderSettings
 import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport.headerSettings
+import sbt._
 import sbt.Keys._
+import sbt.Tests.{Group, SubProcess}
 import uk.gov.hmrc.gitstamp.GitStampPlugin
 
 object DefaultBuildSettings {
@@ -26,8 +27,6 @@ object DefaultBuildSettings {
   lazy val targetJvm = settingKey[String]("The version of the JVM the build targets")
 
   lazy val scalaSettings: Seq[Setting[_]] = {
-    targetJvm := "jvm-1.8"
-
     def toLong(v: String): Long =
       v.split("\\.") match {
         case Array(maj, min, pat) => maj.toInt * 1000 + min.toInt * 1000 + pat.toInt
@@ -42,6 +41,7 @@ object DefaultBuildSettings {
       }
 
     Seq(
+      targetJvm := "jvm-1.8",
       scalaVersion := "2.11.12",
       scalacOptions ++= Seq(
         "-unchecked",
@@ -59,26 +59,27 @@ object DefaultBuildSettings {
            else Seq.empty
           ),
 
-      javacOptions ++= (Seq(
+      javacOptions ++= Seq(
         "-Xlint",
         "-encoding", "UTF-8"
-      ) ++ (if (javaMajorVersion >= 9) {
-        Seq(
-          "--release", targetJvm.value.stripPrefix("jvm-").stripPrefix("1.")
-        )
-      } else {
-        Seq(
-          "-source", targetJvm.value.stripPrefix("jvm-"),
-          "-target", targetJvm.value.stripPrefix("jvm-")
-        )
-      }))
+        ) ++
+          (if (javaMajorVersion >= 9)
+            Seq(
+              "--release", targetJvm.value.stripPrefix("jvm-").stripPrefix("1.")
+            )
+          else
+            Seq(
+              "-source", targetJvm.value.stripPrefix("jvm-"),
+              "-target", targetJvm.value.stripPrefix("jvm-")
+            )
+          )
     )
   }
 
   def defaultSettings(addScalaTestReports: Boolean = true): Seq[Setting[_]] =
     Seq(
       organization := "uk.gov.hmrc",
-      parallelExecution in Test := false,
+      Test / parallelExecution := false,
       isSnapshot := version.value.matches("([\\w\\.]+\\-SNAPSHOT)|([\\.\\w]+)\\-([\\d]+)\\-([\\w]+)")
     ) ++
     GitStampPlugin.gitStampSettings ++
@@ -87,14 +88,14 @@ object DefaultBuildSettings {
   def integrationTestSettings(enableLicenseHeaders: Boolean = true): Seq[Setting[_]] =
     inConfig(IntegrationTest)(Defaults.itSettings) ++
     Seq(
-      Keys.fork in IntegrationTest := false,
-      unmanagedSourceDirectories in IntegrationTest := (baseDirectory in IntegrationTest)(base => Seq(base / "it")).value,
+      IntegrationTest / fork := false,
+      IntegrationTest / unmanagedSourceDirectories := (IntegrationTest / baseDirectory)(base => Seq(base / "it")).value,
       addTestReportOption(IntegrationTest, "int-test-reports"),
-      testGrouping in IntegrationTest := ForkedJvmPerTestSettings.oneForkedJvmPerTest(
-        (definedTests in IntegrationTest).value,
-        (javaOptions in IntegrationTest).value
+      IntegrationTest / testGrouping := oneForkedJvmPerTest(
+        (IntegrationTest / definedTests).value,
+        (IntegrationTest / javaOptions ).value
       ),
-      parallelExecution in IntegrationTest := false
+      IntegrationTest / parallelExecution := false
     ) ++
     (if (enableLicenseHeaders) {
        headerSettings(IntegrationTest) ++
@@ -104,6 +105,15 @@ object DefaultBuildSettings {
 
   def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
     val testResultDir = "target/" + directory
-    testOptions in conf += Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
+    conf / testOptions += Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
   }
+
+  def oneForkedJvmPerTest(tests: Seq[TestDefinition], forkJvmOptions: Seq[String] = Seq.empty): Seq[Group] =
+    tests.map(test =>
+      Group(
+        test.name,
+        Seq(test),
+        SubProcess(ForkOptions().withRunJVMOptions(forkJvmOptions.toVector ++ Vector("-Dtest.name=" + test.name)))
+      )
+    )
 }
