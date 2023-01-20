@@ -25,13 +25,13 @@ object DefaultBuildSettings {
     targetJvm := "jvm-1.8"
 
     Seq(
-      scalaVersion := "2.12.10",
+      scalaVersion := "2.12.17",
       scalacOptions ++= Seq(
         "-unchecked",
         "-deprecation",
         "-Xlint",
         "-language:_",
-        "-target:" + targetJvm.value,
+        "-release", targetJvm.value.stripPrefix("jvm-").stripPrefix("1."),
         "-Xmax-classfile-name", "100",
         "-encoding", "UTF-8"
       )

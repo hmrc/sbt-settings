@@ -47,7 +47,6 @@ object DefaultBuildSettings {
         "-unchecked",
         "-deprecation",
         "-Xlint",
-        "-target:" + targetJvm.value,
         "-encoding", "UTF-8"
         ) ++
           (if (toLong(scalaVersion.value) < toLong("2.12.4"))
@@ -57,6 +56,12 @@ object DefaultBuildSettings {
           (if (toLong(scalaVersion.value) < toLong("2.13.0"))
              Seq("-Xmax-classfile-name", "100") // https://github.com/scala/scala/pull/7497
            else Seq.empty
+          )++
+          // https://www.scala-lang.org/news/2.13.9
+          (if (toLong(scalaVersion.value) < toLong("2.13.9"))
+             Seq("-target:" + targetJvm.value)
+           else
+              Seq("-release", targetJvm.value.stripPrefix("jvm-").stripPrefix("1."))
           ),
 
       javacOptions ++= Seq(
