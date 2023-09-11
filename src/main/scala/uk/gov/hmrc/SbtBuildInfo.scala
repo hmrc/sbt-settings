@@ -18,8 +18,7 @@ package uk.gov.hmrc
 import sbt.Keys._
 import sbt._
 import sbtbuildinfo.BuildInfoKey
-import sbtbuildinfo.BuildInfoKeys.buildInfoKeys
-import sbtbuildinfo.BuildInfoPlugin.autoImport.{BuildInfoOption, buildInfoOptions}
+import sbtbuildinfo.BuildInfoPlugin.autoImport.{BuildInfoOption, buildInfoKeys, buildInfoOptions}
 import uk.gov.hmrc.gitstamp.GitStamp.gitStamp
 
 object SbtBuildInfo {
@@ -32,12 +31,12 @@ object SbtBuildInfo {
         scalaVersion,
         sbtVersion,
         libraryDependencies,
-        BuildInfoKey.action("builtAt")(now)
+        BuildInfoKey.action("builtAt")(currentDateString())
       ) ++ gitStamp.toSeq.map(toBuildInfo),
     buildInfoOptions := Seq(BuildInfoOption.ToMap)
   )
 
-  def now: String =
+  private def currentDateString(): String =
     java.time.LocalDate.now(java.time.ZoneId.of("UTC")).toString
 
   //Map extracted values from sbt-git-stamp plugin to build info keys, dropping hypens in the name

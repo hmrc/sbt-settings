@@ -26,11 +26,11 @@ import scala.sys.process.ProcessLogger
 object ShellPrompt {
 
   object devnull extends ProcessLogger {
-    def out(s: => String) {}
+    override def out(s: => String): Unit = ()
 
-    def err(s: => String) {}
+    override def err(s: => String): Unit = ()
 
-    def buffer[T](f: => T): T = f
+    override def buffer[T](f: => T): T = f
   }
 
   import scala.sys.process._
@@ -41,11 +41,12 @@ object ShellPrompt {
       .getOrElse("-")
       .stripPrefix("## ")
 
-  private def buildShellPrompt(buildVersion : String) =
+  private def buildShellPrompt(buildVersion: String) =
     (state: State) => {
       val currProject = Project.extract(state).currentProject.id
       "%s:%s:%s> ".format(currProject, currBranch, buildVersion)
     }
 
-  def apply(buildVersion : String) = buildShellPrompt(buildVersion)
+  def apply(buildVersion: String): State => String =
+    buildShellPrompt(buildVersion)
 }
