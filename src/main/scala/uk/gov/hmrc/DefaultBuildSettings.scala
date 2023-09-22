@@ -89,6 +89,7 @@ object DefaultBuildSettings {
     GitStampPlugin.gitStampSettings ++
     (if (addScalaTestReports) addTestReportOption(Test) else Seq.empty)
 
+  @deprecated("IntegrationTest scope is deprecated - see sbt-settings README: https://github.com/hmrc/sbt-settings", "4.15.0")
   def integrationTestSettings(enableLicenseHeaders: Boolean = true): Seq[Setting[_]] =
     inConfig(IntegrationTest)(Defaults.itSettings) ++
     Seq(
@@ -105,6 +106,16 @@ object DefaultBuildSettings {
        headerSettings(IntegrationTest) ++
        automateHeaderSettings(IntegrationTest)
      } else Seq.empty
+   )
+
+  def itSettings: Seq[Setting[_]] =
+    Seq(
+      publishArtifact := false,
+      Test / fork := false,
+      Test / testGrouping := oneForkedJvmPerTest(
+        (Test / definedTests).value,
+        (Test / javaOptions ).value
+      )
     )
 
   def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
