@@ -20,7 +20,7 @@ sbt 2.x, since version `4.15.0` of `sbt-settings`, it is recommended to create a
 
 e.g.
 
-Move sources from `it/` to `it/test` folder.
+⚠️ Move sources from `it/` to `it/test` folder. Failure to do so will lead to no tests being found and run.
 
 Then
 
