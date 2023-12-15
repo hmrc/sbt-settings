@@ -84,7 +84,7 @@ object DefaultBuildSettings {
       organization := "uk.gov.hmrc",
       Test / parallelExecution := false,
       isSnapshot := version.value.matches("([\\w\\.]+\\-SNAPSHOT)|([\\.\\w]+)\\-([\\d]+)\\-([\\w]+)"),
-      targetJvm  := "jvm-1.8"
+      targetJvm  := "jvm-11"
     ) ++
     GitStampPlugin.gitStampSettings ++
     (if (addScalaTestReports) addTestReportOption(Test) else Seq.empty)
