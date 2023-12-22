@@ -108,14 +108,19 @@ object DefaultBuildSettings {
      } else Seq.empty
    )
 
-  def itSettings: Seq[Setting[_]] =
+  /** @param forkJvmPerTest set to true for increased isolation between tests. Note however that the tests will run slower.
+    */
+  def itSettings(forkJvmPerTest: Boolean = false): Seq[Setting[_]] =
     Seq(
       publishArtifact := false,
-      Test / fork := false,
-      Test / testGrouping := oneForkedJvmPerTest(
-        (Test / definedTests).value,
-        (Test / javaOptions ).value
-      )
+      Test / fork := false
+    ) ++
+    (if (forkJvmPerTest)
+       Test / testGrouping := oneForkedJvmPerTest(
+         (Test / definedTests).value,
+         (Test / javaOptions ).value
+       )
+     else Seq.empty
     )
 
   def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
