@@ -56,7 +56,8 @@ object DefaultBuildSettings {
            else Seq.empty
           )++
           // https://www.scala-lang.org/news/2.13.9
-          (if (toLong(scalaVersion.value) < toLong("2.13.9"))
+          (if ((scalaBinaryVersion.value == "2.13") && toLong(scalaVersion.value) < toLong("2.13.9")
+            || (scalaBinaryVersion.value == "2.12") && toLong(scalaVersion.value) < toLong("2.12.17"))
              Seq("-target:" + targetJvm.value)
            else
               Seq("-release", targetJvm.value.stripPrefix("jvm-").stripPrefix("1."))
