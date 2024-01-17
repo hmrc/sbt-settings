@@ -60,7 +60,7 @@ object DefaultBuildSettings {
             || (scalaBinaryVersion.value == "2.12") && toLong(scalaVersion.value) < toLong("2.12.17"))
              Seq("-target:" + targetJvm.value)
            else
-              Seq("-release", targetJvm.value.stripPrefix("jvm-").stripPrefix("1."))
+             Seq("-release", targetJvm.value.stripPrefix("jvm-").stripPrefix("1."))
           ),
 
       javacOptions ++= Seq(
