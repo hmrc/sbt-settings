@@ -29,7 +29,7 @@ object DefaultBuildSettings {
   def scalaSettings: Seq[Setting[_]] = {
     def toLong(v: String): Long =
       v.split("\\.") match {
-        case Array(maj, min, pat) => maj.toInt * 1000 + min.toInt * 1000 + pat.toInt
+        case Array(maj, min, pat) => maj.toInt * 1000000 + min.toInt * 1000 + pat.toInt
         case _                    => 0
       }
 
@@ -42,14 +42,17 @@ object DefaultBuildSettings {
 
     Seq(
       scalacOptions ++= Seq(
-        "-unchecked",
-        "-deprecation",
-        "-Xlint",
-        "-encoding", "UTF-8"
+          "-unchecked",
+          "-deprecation",
+          "-encoding", "UTF-8"
         ) ++
-          (if (toLong(scalaVersion.value) < toLong("2.12.4"))
-             Seq.empty
-           else Seq("-Ywarn-macros:after") // this was default behaviour uptill 2.12.4. https://github.com/scala/bug/issues/10571
+          (if (toLong(scalaVersion.value) < toLong("3.0.0"))
+            Seq("-Xlint")
+           else Seq.empty
+          ) ++
+          (if (toLong(scalaVersion.value) >= toLong("2.12.4") && toLong(scalaVersion.value) < toLong("3.0.0"))
+             Seq("-Ywarn-macros:after") // this was default behaviour uptill 2.12.4. https://github.com/scala/bug/issues/10571
+           else Seq.empty
           ) ++
           (if (toLong(scalaVersion.value) < toLong("2.13.0"))
              Seq("-Xmax-classfile-name", "100") // https://github.com/scala/scala/pull/7497
@@ -64,8 +67,8 @@ object DefaultBuildSettings {
           ),
 
       javacOptions ++= Seq(
-        "-Xlint",
-        "-encoding", "UTF-8"
+          "-Xlint",
+          "-encoding", "UTF-8"
         ) ++
           (if (javaMajorVersion >= 9)
             Seq(
