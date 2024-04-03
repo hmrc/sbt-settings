@@ -114,7 +114,16 @@ object DefaultBuildSettings {
   def itSettings(forkJvmPerTest: Boolean = false): Seq[Setting[_]] =
     Seq(
       publishArtifact := false,
-      Test / fork := false
+      Test / fork := false,
+      Test / testOptions := {
+        // not straight forward to avoid adding our test options in the first place
+        // we don't want to replace all testOptions (e.g. from build or PlaySettings)
+        (Test / testOptions).value
+          .filterNot {
+            case sbt.Tests.Argument(_, args) if args.contains("-u") => true
+            case _                                                  => false
+          } :+ testReportArgument("int-test-reports")
+      }
     ) ++
     (if (forkJvmPerTest)
        Test / testGrouping := oneForkedJvmPerTest(
@@ -124,9 +133,12 @@ object DefaultBuildSettings {
      else Seq.empty
     )
 
-  def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
+  def addTestReportOption(conf: Configuration, directory: String = "test-reports") =
+    conf / testOptions += testReportArgument("test-reports")
+
+  private def testReportArgument(directory: String = "test-reports") = {
     val testResultDir = "target/" + directory
-    conf / testOptions += Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
+    Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
   }
 
   def oneForkedJvmPerTest(tests: Seq[TestDefinition], forkJvmOptions: Seq[String] = Seq.empty): Seq[Group] =
