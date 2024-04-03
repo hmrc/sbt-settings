@@ -29,7 +29,7 @@ object DefaultBuildSettings {
   def scalaSettings: Seq[Setting[_]] = {
     def toLong(v: String): Long =
       v.split("\\.") match {
-        case Array(maj, min, pat) => maj.toInt * 1000 + min.toInt * 1000 + pat.toInt
+        case Array(maj, min, pat) => maj.toInt * 1000000 + min.toInt * 1000 + pat.toInt
         case _                    => 0
       }
 
@@ -42,14 +42,17 @@ object DefaultBuildSettings {
 
     Seq(
       scalacOptions ++= Seq(
-        "-unchecked",
-        "-deprecation",
-        "-Xlint",
-        "-encoding", "UTF-8"
+          "-unchecked",
+          "-deprecation",
+          "-encoding", "UTF-8"
         ) ++
-          (if (toLong(scalaVersion.value) < toLong("2.12.4"))
-             Seq.empty
-           else Seq("-Ywarn-macros:after") // this was default behaviour uptill 2.12.4. https://github.com/scala/bug/issues/10571
+          (if (toLong(scalaVersion.value) < toLong("3.0.0"))
+            Seq("-Xlint")
+           else Seq.empty
+          ) ++
+          (if (toLong(scalaVersion.value) >= toLong("2.12.4") && toLong(scalaVersion.value) < toLong("3.0.0"))
+             Seq("-Ywarn-macros:after") // this was default behaviour uptill 2.12.4. https://github.com/scala/bug/issues/10571
+           else Seq.empty
           ) ++
           (if (toLong(scalaVersion.value) < toLong("2.13.0"))
              Seq("-Xmax-classfile-name", "100") // https://github.com/scala/scala/pull/7497
@@ -64,8 +67,8 @@ object DefaultBuildSettings {
           ),
 
       javacOptions ++= Seq(
-        "-Xlint",
-        "-encoding", "UTF-8"
+          "-Xlint",
+          "-encoding", "UTF-8"
         ) ++
           (if (javaMajorVersion >= 9)
             Seq(
@@ -114,7 +117,16 @@ object DefaultBuildSettings {
   def itSettings(forkJvmPerTest: Boolean = false): Seq[Setting[_]] =
     Seq(
       publishArtifact := false,
-      Test / fork := false
+      Test / fork := false,
+      Test / testOptions := {
+        // not straight forward to avoid adding our test options in the first place
+        // we don't want to replace all testOptions (e.g. from build or PlaySettings)
+        (Test / testOptions).value
+          .filterNot {
+            case sbt.Tests.Argument(_, args) if args.contains("-u") => true
+            case _                                                  => false
+          } :+ testReportArgument("int-test-reports")
+      }
     ) ++
     (if (forkJvmPerTest)
        Test / testGrouping := oneForkedJvmPerTest(
@@ -124,9 +136,12 @@ object DefaultBuildSettings {
      else Seq.empty
     )
 
-  def addTestReportOption(conf: Configuration, directory: String = "test-reports") = {
+  def addTestReportOption(conf: Configuration, directory: String = "test-reports") =
+    conf / testOptions += testReportArgument("test-reports")
+
+  private def testReportArgument(directory: String = "test-reports") = {
     val testResultDir = "target/" + directory
-    conf / testOptions += Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
+    Tests.Argument("-o", "-u", testResultDir, "-h", testResultDir + "/html-report")
   }
 
   def oneForkedJvmPerTest(tests: Seq[TestDefinition], forkJvmOptions: Seq[String] = Seq.empty): Seq[Group] =
