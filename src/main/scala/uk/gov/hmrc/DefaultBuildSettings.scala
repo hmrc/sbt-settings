@@ -48,7 +48,8 @@ object DefaultBuildSettings {
         ) ++
           (if (toLong(scalaVersion.value) < toLong("3.0.0"))
             Seq("-Xlint")
-           else Seq.empty
+           else
+            Seq("-Wunused:all")
           ) ++
           (if (toLong(scalaVersion.value) >= toLong("2.12.4") && toLong(scalaVersion.value) < toLong("3.0.0"))
              Seq("-Ywarn-macros:after") // this was default behaviour uptill 2.12.4. https://github.com/scala/bug/issues/10571
